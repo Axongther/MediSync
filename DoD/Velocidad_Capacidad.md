@@ -26,9 +26,9 @@
 
 | Sprint | Fecha | Velocidad estimada | Pts planeados | Estado |
 |---|---|---|---|---|
-| Sprint 1 | 4 de mayo | 16 pts | 20 pts | ⚠️ +4 pts sobre velocidad |
-| Sprint 2 | 7 de mayo | 16 pts | 19 pts | ⚠️ +3 pts sobre velocidad |
-| Sprint 3 | 12 de mayo | 16 pts | 9 pts | ✅ Bajo velocidad — disponible para jalar del backlog |
+| Sprint 1 | 4 de mayo | 16 pts | 20 pts | +4 pts sobre velocidad |
+| Sprint 2 | 7 de mayo | 16 pts | 19 pts | +3 pts sobre velocidad |
+| Sprint 3 | 12 de mayo | 16 pts | 9 pts | Bajo velocidad — disponible para jalar del backlog |
 
 ---
 
@@ -66,7 +66,7 @@
 
 ---
 
-## Backlog (sin fecha fija — se jalan cuando hay capacidad)
+## MVP
 
 | ID | Historia | Pts |
 |---|---|---|
@@ -88,9 +88,3 @@
 | Jair | 5 pts | 6 pts | 6 pts | **17 pts** |
 
 ---
-
-## Nota sobre velocidad real
-
-Como es el primer sprint del proyecto, la velocidad de **16 pts** es una estimación. Al terminar Sprint 1 se registra cuántos puntos se completaron realmente y esa cifra se convierte en la velocidad real para ajustar Sprint 2 y 3.
-
-> **Ejemplo:** si el equipo completa 14 pts en Sprint 1 → se ajustan los 19 pts de Sprint 2 y se mueven HU al backlog.

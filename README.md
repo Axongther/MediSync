@@ -55,6 +55,8 @@ MediSync/
 ├── DoD/
 │   ├── MediSync_DoD.md          # Definition of Done del equipo
 │   └── Velocidad_Capacidad.md   # Velocidad estimada y asignación por sprint
+├── Entregables/                 # Documentos de entregas del curso
+├── Jira/                        # Capturas del tablero Jira
 └── actas/
     └── reunion_YYYY-MM-DD.md    # Actas de reuniones del equipo
 ```

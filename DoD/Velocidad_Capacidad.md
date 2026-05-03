@@ -8,65 +8,64 @@
 
 | Dev | Rol | Hrs/día | Días/sprint | Capacidad/sprint |
 |---|---|---|---|---|
+| Nicolás | Scrum Master + Fullstack | 4 hrs | 3 | 12 hrs |
 | Alejandro | Fullstack | 4 hrs | 3 | 12 hrs |
-| Alan | Arquitecto + Fullstack | 3 hrs | 3 | 9 hrs |
+| Alan | Arquitecto | 3 hrs | 3 | 9 hrs |
 | Jair | Fullstack | 4 hrs | 3 | 12 hrs |
-| **Total equipo** | | | | **33 hrs/sprint** |
-
-> Alan tiene 3 hrs/día por su doble rol de Arquitecto — parte de su tiempo va a decisiones de arquitectura con Nicolás.
+| **Total equipo** | | | | **45 hrs/sprint** |
 
 ---
 
 ## Velocidad Estimada
 
 > **1 punto de historia = 2 horas de trabajo**
-> **Velocidad estimada = 33 hrs ÷ 2 = 16 pts/sprint**
+> **Velocidad estimada = 45 hrs ÷ 2 = 22.2 pts/sprint**
 
 ### Comparativa por sprint
 
 | Sprint | Fecha | Velocidad estimada | Pts planeados | Estado |
 |---|---|---|---|---|
-| Sprint 1 | 4 de mayo | 16 pts | 20 pts | ⚠️ +4 pts sobre velocidad |
-| Sprint 2 | 7 de mayo | 16 pts | 19 pts | ⚠️ +3 pts sobre velocidad |
-| Sprint 3 | 12 de mayo | 16 pts | 9 pts | ✅ Bajo velocidad — disponible para jalar del backlog |
+| Sprint 0 | 4 de mayo | 16 pts | 20 pts | +4 pts sobre velocidad |
+| Sprint 1 | 7 de mayo | 16 pts | 19 pts | +3 pts sobre velocidad |
+| Sprint 2 | 12 de mayo | 16 pts | 9 pts | Bajo velocidad — disponible para jalar del backlog |
 
 ---
 
 ## Asignación por Sprint
 
-### Sprint 1 — 4 de mayo | 20 pts
+### Sprint 0 — 4 de mayo | 20 pts
 
 | ID | Historia | Pts | Asignado |
 |---|---|---|---|
 | HU-20 | Gestionar roles de acceso | 5 | Alejandro |
-| HU-01 | Registrar nuevos pacientes | 5 | Alan |
+| HU-01 | Registrar nuevos pacientes | 5 | Nicolás |
 | HU-04 | Crear y modificar citas | 5 | Jair |
 | HU-06 | Ver agenda por médico y día | 3 | Alejandro |
-| HU-18 | Buscar paciente | 2 | Alan |
+| HU-18 | Buscar paciente | 2 | Nicolás |
 
-### Sprint 2 — 7 de mayo | 19 pts
+### Sprint 1 — 7 de mayo | 19 pts
 
 | ID | Historia | Pts | Asignado |
 |---|---|---|---|
 | HU-05 | Cancelar citas | 3 | Alejandro |
 | HU-02 | Buscar historial clínico | 3 | Alejandro |
-| HU-11 | Reprogramar cita | 3 | Alan |
-| HU-16 | Agenda diaria del médico | 2 | Alan |
-| HU-13 | Historial de citas pasadas | 2 | Alan |
+| HU-11 | Reprogramar cita | 3 | Nicolás |
+| HU-16 | Agenda diaria del médico | 2 | Nicolás |
+| HU-13 | Historial de citas pasadas | 2 | Nicolás |
 | HU-12 | Ver horarios disponibles | 3 | Jair |
 | HU-07 | Configurar slots por especialidad | 3 | Jair |
 
-### Sprint 3 — 12 de mayo | 9 pts
+### Sprint 2 — 12 de mayo | 9 pts
 
 | ID | Historia | Pts | Asignado |
 |---|---|---|---|
 | HU-09 | Correo al programar cita | 3 | Jair |
 | HU-17 | Notif. al modificar/cancelar | 3 | Jair |
-| HU-10 | Alerta de cancelación | 3 | Alan |
+| HU-10 | Alerta de cancelación | 3 | Nicolás |
 
 ---
 
-## Backlog (sin fecha fija — se jalan cuando hay capacidad)
+## MVP
 
 | ID | Historia | Pts |
 |---|---|---|
@@ -84,13 +83,7 @@
 | Dev | Sprint 1 | Sprint 2 | Sprint 3 | Total |
 |---|---|---|---|---|
 | Alejandro | 8 pts | 6 pts | 0 pts | **14 pts** |
-| Alan | 7 pts | 7 pts | 3 pts | **17 pts** |
+| Nicolás | 7 pts | 7 pts | 3 pts | **17 pts** |
 | Jair | 5 pts | 6 pts | 6 pts | **17 pts** |
 
 ---
-
-## Nota sobre velocidad real
-
-Como es el primer sprint del proyecto, la velocidad de **16 pts** es una estimación. Al terminar Sprint 1 se registra cuántos puntos se completaron realmente y esa cifra se convierte en la velocidad real para ajustar Sprint 2 y 3.
-
-> **Ejemplo:** si el equipo completa 14 pts en Sprint 1 → se ajustan los 19 pts de Sprint 2 y se mueven HU al backlog.

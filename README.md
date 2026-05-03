@@ -55,8 +55,19 @@ MediSync/
 ├── DoD/
 │   ├── MediSync_DoD.md          # Definition of Done del equipo
 │   └── Velocidad_Capacidad.md   # Velocidad estimada y asignación por sprint
-├── Entregables/                 # Documentos de entregas del curso
-├── Jira/                        # Capturas del tablero Jira
+├── Entregables/
+│   ├── Entregable_1/            # Entrega 1 — Fundamentos
+│   ├── MVP/                     # Entrega 2 — MVP
+│   ├── FINAL/                   # Proyecto Final
+│   └── Exposicion/              # Exposición Final
+├── Jira/
+│   ├── MVP_(Backlog).png
+│   ├── Resumen.png
+│   ├── Resumen_1.png
+│   ├── Resumen_2.png
+│   ├── Sprint_0.png
+│   ├── Sprint_1.png
+│   └── Sprint_2.png
 └── actas/
     └── reunion_YYYY-MM-DD.md    # Actas de reuniones del equipo
 ```

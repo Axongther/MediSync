@@ -1,0 +1,7 @@
+infrastructure/terraform.tfvars
+infrastructure/.terraform/
+infrastructure/lambda_notifications.zip
+*.env
+
+infrastructure/terraform.tfstate
+infrastructure/terraform.tfstate.backup

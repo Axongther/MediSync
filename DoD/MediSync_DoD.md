@@ -23,7 +23,7 @@ Una historia de usuario se considera **terminada** cuando cumple **todas** las s
 
 ## Despliegue
 -  Está desplegada en el ambiente de staging/pruebas
--  El SM (Nicolás) la validó antes de cerrarla en Jira
+-  El SM la validó antes de cerrarla en Jira
 
 ## Documentación
 -  El ticket en Jira está actualizado con comentarios o evidencia (captura o video corto)

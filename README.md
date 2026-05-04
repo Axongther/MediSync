@@ -32,7 +32,7 @@ MediSync es una plataforma web para la gestión de pacientes, citas médicas, ex
 | Integrante | Rol |
 |---|---|
 | Nicolás | Scrum Master + Fullstack |
-| Alan | Arquitecto |
+| Alan | Arquitecto + Fullstack |
 | Alejandro | Fullstack + Product Owner |
 | Jair | Fullstack + Product Owner |
 

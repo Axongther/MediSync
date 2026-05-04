@@ -69,7 +69,7 @@
 
 | ID | Historia | Pts |
 |---|---|---|
-| HU-03 | Ver citas previas (móvil) | 2 |
+| HU-03 | Ver citas previas | 2 |
 | HU-08 | Push notification 24h | 5 |
 | HU-14 | Tasa de cancelaciones | 3 |
 | HU-15 | Métricas por médico | 3 |

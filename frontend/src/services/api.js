@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3001/api';
+const API_URL = 'http://100.55.193.247/api';
 
 const getToken = () => localStorage.getItem('token');
 
@@ -20,9 +20,6 @@ const request = async (path, options = {}) => {
 };
 
 const api = {
-  // Exponer request para uso directo
-  request,
-
   // Auth
   login: (email, password) => request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
   register: (data) => request('/auth/register', { method: 'POST', body: JSON.stringify(data) }),

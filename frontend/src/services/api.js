@@ -20,6 +20,9 @@ const request = async (path, options = {}) => {
 };
 
 const api = {
+  // Exponer request para uso directo
+  request,
+
   // Auth
   login: (email, password) => request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
   register: (data) => request('/auth/register', { method: 'POST', body: JSON.stringify(data) }),

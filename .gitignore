@@ -5,3 +5,7 @@ infrastructure/lambda_notifications.zip
 
 infrastructure/terraform.tfstate
 infrastructure/terraform.tfstate.backup
+*.gitkeep
+
+package-lock.json
+package.json

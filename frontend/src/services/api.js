@@ -34,6 +34,7 @@ const api = {
   // Médicos
   getMedicos: () => request('/medicos'),
   getMedico: (id) => request(`/medicos/${id}`),
+  createMedico: (data) => request('/medicos', { method: 'POST', body: JSON.stringify(data) }),
   getSlotsDisponibles: (doctorId, fecha) => request(`/medicos/${doctorId}/slots-disponibles/${fecha}`),
 
   // Citas

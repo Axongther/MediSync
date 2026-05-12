@@ -10,7 +10,7 @@
 
 El presente documento identifica, analiza y documenta los riesgos asociados al proceso de desarrollo del sistema MediSync. Su propósito es registrar de manera formal los riesgos que fueron considerados durante el ciclo de vida del proyecto, las estrategias de mitigación aplicadas y el estado final de cada riesgo al cierre del desarrollo.
 
-El alcance de este documento se limita exclusivamente a la dimensión de **desarrollo de software**, abarcando el backend, el frontend, la base de datos y la integración con servicios de terceros. Los riesgos de infraestructura, operación y negocio se tratan en documentos separados.
+El alcance de este documento se limita exclusivamente a la dimensión de **desarrollo de software**, abarcando el backend, el frontend, la base de datos y la integración con servicios de terceros. Los riesgos de infraestructura, operación y negocio se tratan en este mismo documento.
 
 ---
 
@@ -280,5 +280,3 @@ De los doce riesgos identificados en el proceso de desarrollo, seis se materiali
 La totalidad de los riesgos de nivel crítico y alto que se materializaron fueron resueltos sin impacto permanente sobre la funcionalidad del sistema. Los riesgos aceptados como deuda técnica no comprometen la operación del sistema en su estado actual, pero deberán ser atendidos antes de escalar el sistema a un entorno de producción con mayor volumen de usuarios y datos.
 
 ---
-
-*Documento elaborado al cierre del Proyecto Final — Diseño y Arquitectura de Software — Universidad Tecmilenio — Mayo 2026*

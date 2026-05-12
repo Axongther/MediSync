@@ -27,7 +27,7 @@ function CatalogoMedicos() {
     setSaving(true);
     setError('');
     try {
-      await api.request('/medicos', { method: 'POST', body: JSON.stringify(form) });
+      await api.createMedico(form);
       setShowModal(false);
       setForm(EMPTY_FORM);
       fetchMedicos();

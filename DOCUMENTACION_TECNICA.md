@@ -17,6 +17,7 @@
 8. [Flujos Principales](#8-flujos-principales)
 9. [Configuración y Despliegue](#9-configuración-y-despliegue)
 10. [Variables de Entorno](#10-variables-de-entorno)
+11. [Componentes Web](#11-guía-de-componentes-web)
 
 ---
 
@@ -1271,11 +1272,3 @@ function MiPagina() {
   );
 }
 ```
-
-**Reglas generales:**
-- Siempre usar `.layout` + `Sidebar` + `.content` como contenedor base en páginas autenticadas
-- El footer va al final de cada `<main className="content">`
-- Los mensajes de error usan `.error-msg`
-- Las acciones en tablas usan `.btn-action` (azul) o `.btn-action.btn-action-danger` (rojo)
-- Los formularios en modales usan `.form-label` + `.form-input`
-- El estado de carga parcial usa `<p style={{ color: '#888' }}>Cargando...</p>` dentro de `.table-card`

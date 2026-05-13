@@ -189,6 +189,18 @@ El sistema implementa control de acceso basado en roles (RBAC) en dos niveles: m
 
 ---
 
+# Resumen Ejecutivo – Product Owner
+
+El proyecto **MediSync** fue gestionado por dos Product Owners de manera simultánea, con el objetivo de reforzar el entendimiento del rol y dar una visión más estructurada y orientada al negocio del producto.
+
+**MediSync** es una plataforma de gestión médica desarrollada en un periodo de 12 días (del 1 al 12 de mayo de 2026), alcanzando el 100% del alcance definido e integrando backend, frontend, infraestructura en la nube y documentación técnica.
+
+La colaboración entre ambos Product Owners permitió mejorar la priorización del producto y la toma de decisiones, asegurando una entrega alineada a los objetivos planteados.
+
+El proyecto fue entregado completamente funcional, sin defectos críticos abiertos en producción.
+
+---
+
 ## 6. Conclusiones
 
 El proyecto MediSync fue completado en su totalidad dentro del período establecido. Se desarrollaron 88 archivos de código fuente con un total aproximado de 6,277 líneas, distribuidas entre backend, frontend, infraestructura y documentación.

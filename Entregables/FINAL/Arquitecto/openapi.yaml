@@ -1,0 +1,1305 @@
+openapi: 3.0.0
+info:
+  title: MediSync API
+  version: 1.0.0
+  description: API REST para MediSync, plataforma médica de la Clínica San Ángel
+servers:
+  - url: http://100.55.193.247/api
+    description: Servidor de producción (AWS EC2)
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Mensaje de error
+
+    Paciente:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        age:
+          type: integer
+        blood_type:
+          type: string
+          example: O+
+        allergies:
+          type: string
+        address:
+          type: string
+        is_active:
+          type: boolean
+
+    Medico:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        specialty:
+          type: string
+        consultation_cost:
+          type: number
+          format: float
+        office_number:
+          type: integer
+        office_address:
+          type: string
+        photo_url:
+          type: string
+        avg_rating:
+          type: number
+        total_ratings:
+          type: integer
+        is_active:
+          type: boolean
+
+    Cita:
+      type: object
+      properties:
+        id:
+          type: integer
+        patient_id:
+          type: integer
+        doctor_id:
+          type: integer
+        appointment_date:
+          type: string
+          format: date
+        appointment_time:
+          type: string
+          example: "09:00:00"
+        status:
+          type: string
+          enum: [pendiente, confirmada, cancelada, completada]
+        reason:
+          type: string
+        instructions:
+          type: string
+        paciente_nombre:
+          type: string
+        medico_nombre:
+          type: string
+        medico_especialidad:
+          type: string
+
+    Expediente:
+      type: object
+      properties:
+        id:
+          type: integer
+        patient_id:
+          type: integer
+        doctor_id:
+          type: integer
+        appointment_id:
+          type: integer
+        visit_reason:
+          type: string
+        diagnosis:
+          type: string
+        treatment:
+          type: string
+        notes:
+          type: string
+        record_date:
+          type: string
+          format: date
+        doctor_nombre:
+          type: string
+        specialty:
+          type: string
+
+    Slot:
+      type: object
+      properties:
+        id:
+          type: integer
+        doctor_id:
+          type: integer
+        day_of_week:
+          type: integer
+          description: "0=Domingo, 1=Lunes, ..., 6=Sábado"
+        start_time:
+          type: string
+          example: "09:00:00"
+        end_time:
+          type: string
+          example: "14:00:00"
+        slot_duration:
+          type: integer
+          description: Duración en minutos
+        is_active:
+          type: boolean
+
+    Calificacion:
+      type: object
+      properties:
+        id:
+          type: integer
+        patient_id:
+          type: integer
+        doctor_id:
+          type: integer
+        appointment_id:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [paciente, medico, recepcionista, director]
+        is_active:
+          type: boolean
+
+security:
+  - BearerAuth: []
+
+paths:
+
+  # ─── AUTH ────────────────────────────────────────────────
+  /auth/register:
+    post:
+      tags: [Autenticación]
+      summary: Registrar nuevo usuario
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        "201":
+          description: Usuario registrado exitosamente
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/login:
+    post:
+      tags: [Autenticación]
+      summary: Iniciar sesión
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: director@medisync.com
+                password:
+                  type: string
+                  example: "12345678"
+      responses:
+        "200":
+          description: Login exitoso, devuelve token JWT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/Usuario"
+        "401":
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/me:
+    get:
+      tags: [Autenticación]
+      summary: Obtener usuario autenticado
+      responses:
+        "200":
+          description: Datos del usuario autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Usuario"
+        "401":
+          description: Token inválido o expirado
+
+  # ─── PACIENTES ───────────────────────────────────────────
+  /pacientes:
+    get:
+      tags: [Pacientes]
+      summary: Listar todos los pacientes
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Filtrar por nombre, email o teléfono
+      responses:
+        "200":
+          description: Lista de pacientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Paciente"
+        "401":
+          description: No autorizado
+    post:
+      tags: [Pacientes]
+      summary: Crear nuevo paciente
+      description: Roles permitidos — recepcionista, director
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                age:
+                  type: integer
+                blood_type:
+                  type: string
+                allergies:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+      responses:
+        "201":
+          description: Paciente creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Paciente"
+        "400":
+          description: Datos inválidos
+        "403":
+          description: Sin permisos
+
+  /pacientes/{id}:
+    get:
+      tags: [Pacientes]
+      summary: Obtener paciente por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Datos del paciente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Paciente"
+        "404":
+          description: Paciente no encontrado
+    put:
+      tags: [Pacientes]
+      summary: Actualizar datos del paciente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Paciente"
+      responses:
+        "200":
+          description: Paciente actualizado
+        "404":
+          description: Paciente no encontrado
+
+  /pacientes/{id}/desactivar:
+    put:
+      tags: [Pacientes]
+      summary: Desactivar paciente (soft delete)
+      description: Roles permitidos — director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Paciente desactivado
+        "403":
+          description: Sin permisos
+        "404":
+          description: Paciente no encontrado
+
+  # ─── MÉDICOS ─────────────────────────────────────────────
+  /medicos:
+    get:
+      tags: [Médicos]
+      summary: Listar todos los médicos
+      security: []
+      responses:
+        "200":
+          description: Lista de médicos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Medico"
+    post:
+      tags: [Médicos]
+      summary: Registrar nuevo médico
+      description: Roles permitidos — director
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password, specialty]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                specialty:
+                  type: string
+                consultation_cost:
+                  type: number
+                office_number:
+                  type: integer
+                office_address:
+                  type: string
+      responses:
+        "201":
+          description: Médico registrado
+        "403":
+          description: Sin permisos
+
+  /medicos/{id}:
+    get:
+      tags: [Médicos]
+      summary: Obtener perfil del médico
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Perfil del médico
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Medico"
+        "404":
+          description: Médico no encontrado
+    put:
+      tags: [Médicos]
+      summary: Actualizar perfil del médico
+      description: Roles permitidos — director, medico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Medico"
+      responses:
+        "200":
+          description: Médico actualizado
+        "403":
+          description: Sin permisos
+
+  /medicos/{id}/desactivar:
+    put:
+      tags: [Médicos]
+      summary: Desactivar médico
+      description: Roles permitidos — director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Médico desactivado
+        "403":
+          description: Sin permisos
+
+  /medicos/{id}/horarios:
+    get:
+      tags: [Médicos]
+      summary: Obtener horarios configurados del médico
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Slots de horario del médico
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Slot"
+
+  /medicos/{id}/slots-disponibles/{fecha}:
+    get:
+      tags: [Médicos]
+      summary: Obtener horarios disponibles para una fecha específica
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: fecha
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-05-15"
+      responses:
+        "200":
+          description: Horarios disponibles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  horarios_disponibles:
+                    type: array
+                    items:
+                      type: string
+                      example: "09:00:00"
+
+  # ─── CITAS ───────────────────────────────────────────────
+  /citas:
+    get:
+      tags: [Citas]
+      summary: Listar todas las citas
+      responses:
+        "200":
+          description: Lista de citas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cita"
+    post:
+      tags: [Citas]
+      summary: Crear nueva cita
+      description: Roles permitidos — recepcionista, paciente, director
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [patient_id, doctor_id, appointment_date, appointment_time]
+              properties:
+                patient_id:
+                  type: integer
+                doctor_id:
+                  type: integer
+                appointment_date:
+                  type: string
+                  format: date
+                appointment_time:
+                  type: string
+                  example: "09:00:00"
+                reason:
+                  type: string
+                instructions:
+                  type: string
+      responses:
+        "201":
+          description: Cita creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cita"
+        "400":
+          description: Horario no disponible o datos inválidos
+        "403":
+          description: Sin permisos
+
+  /citas/{id}:
+    get:
+      tags: [Citas]
+      summary: Obtener cita por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Datos de la cita
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cita"
+        "404":
+          description: Cita no encontrada
+    put:
+      tags: [Citas]
+      summary: Modificar cita
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Cita"
+      responses:
+        "200":
+          description: Cita actualizada
+        "404":
+          description: Cita no encontrada
+
+  /citas/medico/{id}:
+    get:
+      tags: [Citas]
+      summary: Obtener citas por médico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: fecha
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Citas del médico
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cita"
+
+  /citas/paciente/{id}:
+    get:
+      tags: [Citas]
+      summary: Obtener citas por paciente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Citas del paciente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cita"
+
+  /citas/dia/{fecha}:
+    get:
+      tags: [Citas]
+      summary: Obtener citas por día
+      parameters:
+        - name: fecha
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-05-15"
+        - name: medico_id
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Citas del día
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cita"
+
+  /citas/{id}/cancelar:
+    patch:
+      tags: [Citas]
+      summary: Cancelar cita
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: Cancelada por el paciente
+      responses:
+        "200":
+          description: Cita cancelada
+        "404":
+          description: Cita no encontrada
+
+  /citas/{id}/completar:
+    patch:
+      tags: [Citas]
+      summary: Marcar cita como completada
+      description: Roles permitidos — medico, director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Cita completada
+        "403":
+          description: Sin permisos
+
+  # ─── EXPEDIENTES ─────────────────────────────────────────
+  /expedientes/paciente/{id}:
+    get:
+      tags: [Expedientes]
+      summary: Obtener expediente del paciente
+      description: Médicos ven expediente completo. Pacientes ven su propio expediente.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Registros del expediente médico
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Expediente"
+        "403":
+          description: Sin permisos para ver este expediente
+
+  /expedientes:
+    post:
+      tags: [Expedientes]
+      summary: Crear nota de consulta
+      description: Roles permitidos — medico, director
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [patient_id, doctor_id, appointment_id]
+              properties:
+                patient_id:
+                  type: integer
+                doctor_id:
+                  type: integer
+                appointment_id:
+                  type: integer
+                visit_reason:
+                  type: string
+                diagnosis:
+                  type: string
+                treatment:
+                  type: string
+                notes:
+                  type: string
+      responses:
+        "201":
+          description: Nota de consulta creada
+        "403":
+          description: Sin permisos
+
+  /expedientes/{id}:
+    put:
+      tags: [Expedientes]
+      summary: Actualizar nota de consulta
+      description: Roles permitidos — medico, director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Expediente"
+      responses:
+        "200":
+          description: Nota actualizada
+        "403":
+          description: Sin permisos
+        "404":
+          description: Registro no encontrado
+
+  /expedientes/{id}/adjuntos:
+    get:
+      tags: [Expedientes]
+      summary: Obtener archivos adjuntos de un registro médico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lista de adjuntos
+    post:
+      tags: [Expedientes]
+      summary: Subir archivo adjunto al expediente
+      description: Roles permitidos — medico, director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Archivo subido a S3 y referencia guardada
+        "403":
+          description: Sin permisos
+
+  /expedientes/{id}/adjuntos/{archivoId}:
+    delete:
+      tags: [Expedientes]
+      summary: Eliminar archivo adjunto
+      description: Roles permitidos — medico, director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: archivoId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Archivo eliminado
+        "403":
+          description: Sin permisos
+
+  # ─── NOTIFICACIONES ──────────────────────────────────────
+  /notificaciones/{usuario_id}:
+    get:
+      tags: [Notificaciones]
+      summary: Obtener notificaciones del usuario
+      description: >
+        Las notificaciones automáticas (recordatorios 24h antes) son generadas
+        por AWS Lambda. Este endpoint solo consulta el registro de notificaciones.
+      parameters:
+        - name: usuario_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: filter
+          in: query
+          schema:
+            type: string
+            enum: [leidas, no_leidas]
+      responses:
+        "200":
+          description: Notificaciones del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notifications:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        message:
+                          type: string
+                        type:
+                          type: string
+                          enum: [confirmacion, recordatorio, cancelacion]
+                        is_read:
+                          type: boolean
+                        created_at:
+                          type: string
+                          format: date-time
+                  counts:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      leidas:
+                        type: integer
+                      no_leidas:
+                        type: integer
+
+  /notificaciones/{id}/leer:
+    put:
+      tags: [Notificaciones]
+      summary: Marcar notificación como leída
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Notificación marcada como leída
+        "404":
+          description: Notificación no encontrada
+
+  # ─── CALIFICACIONES ──────────────────────────────────────
+  /calificaciones:
+    post:
+      tags: [Calificaciones]
+      summary: Calificar a un médico
+      description: Roles permitidos — paciente. Solo se puede calificar una vez por cita.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [patient_id, doctor_id, appointment_id, rating]
+              properties:
+                patient_id:
+                  type: integer
+                doctor_id:
+                  type: integer
+                appointment_id:
+                  type: integer
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                comment:
+                  type: string
+      responses:
+        "201":
+          description: Calificación registrada
+        "400":
+          description: Ya existe una calificación para esta cita
+        "403":
+          description: Sin permisos
+
+  /calificaciones/medico/{id}:
+    get:
+      tags: [Calificaciones]
+      summary: Obtener calificaciones de un médico
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Calificaciones del médico
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Calificacion"
+
+  # ─── DASHBOARD ───────────────────────────────────────────
+  /dashboard/resumen:
+    get:
+      tags: [Dashboard]
+      summary: Resumen general del dashboard
+      description: Roles permitidos — director
+      responses:
+        "200":
+          description: KPIs principales
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pacientes_atendidos_hoy:
+                    type: integer
+                  citas_confirmadas_mes:
+                    type: integer
+                  ingresos_estimados_mes:
+                    type: number
+                  tasa_cancelacion:
+                    type: number
+                  proximas_citas:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Cita"
+        "403":
+          description: Sin permisos
+
+  /dashboard/pacientes-atendidos:
+    get:
+      tags: [Dashboard]
+      summary: Total de pacientes atendidos
+      description: Roles permitidos — director
+      responses:
+        "200":
+          description: Conteo de pacientes atendidos
+        "403":
+          description: Sin permisos
+
+  /dashboard/citas-por-medico:
+    get:
+      tags: [Dashboard]
+      summary: Citas agrupadas por médico
+      description: Roles permitidos — director
+      responses:
+        "200":
+          description: Citas por médico con totales y estados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    medico:
+                      type: string
+                    specialty:
+                      type: string
+                    total_citas:
+                      type: integer
+                    completadas:
+                      type: integer
+                    canceladas:
+                      type: integer
+        "403":
+          description: Sin permisos
+
+  /dashboard/ingresos:
+    get:
+      tags: [Dashboard]
+      summary: Ingresos estimados por mes
+      description: >
+        Roles permitidos — director.
+        Calculado como citas completadas × costo_consulta del médico.
+      responses:
+        "200":
+          description: Ingresos por mes del año actual
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    mes:
+                      type: integer
+                    ingresos:
+                      type: number
+        "403":
+          description: Sin permisos
+
+  /dashboard/cancelaciones:
+    get:
+      tags: [Dashboard]
+      summary: Métricas de cancelación de citas
+      description: Roles permitidos — director
+      responses:
+        "200":
+          description: Cancelaciones por médico y por responsable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  por_medico:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        medico:
+                          type: string
+                        total_cancelaciones:
+                          type: integer
+                  por_responsable:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cancelled_by:
+                          type: string
+                        total:
+                          type: integer
+        "403":
+          description: Sin permisos
+
+  # ─── SLOTS ───────────────────────────────────────────────
+  /slots:
+    post:
+      tags: [Slots]
+      summary: Crear slot de tiempo para un médico
+      description: Roles permitidos — director
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [doctor_id, day_of_week, start_time, end_time, slot_duration]
+              properties:
+                doctor_id:
+                  type: integer
+                day_of_week:
+                  type: integer
+                  minimum: 0
+                  maximum: 6
+                start_time:
+                  type: string
+                  example: "09:00:00"
+                end_time:
+                  type: string
+                  example: "14:00:00"
+                slot_duration:
+                  type: integer
+                  example: 30
+      responses:
+        "201":
+          description: Slot creado
+        "403":
+          description: Sin permisos
+
+  /slots/{id}:
+    put:
+      tags: [Slots]
+      summary: Modificar slot de tiempo
+      description: Roles permitidos — director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Slot"
+      responses:
+        "200":
+          description: Slot actualizado
+        "403":
+          description: Sin permisos
+        "404":
+          description: Slot no encontrado
+    delete:
+      tags: [Slots]
+      summary: Eliminar slot de tiempo
+      description: Roles permitidos — director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Slot eliminado
+        "403":
+          description: Sin permisos
+
+  # ─── USUARIOS ────────────────────────────────────────────
+  /usuarios:
+    get:
+      tags: [Usuarios]
+      summary: Listar todos los usuarios del sistema
+      description: Roles permitidos — director
+      responses:
+        "200":
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Usuario"
+        "403":
+          description: Sin permisos
+
+  /usuarios/{id}/role:
+    patch:
+      tags: [Usuarios]
+      summary: Cambiar rol de un usuario
+      description: Roles permitidos — director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role:
+                  type: string
+                  enum: [paciente, medico, recepcionista, director]
+      responses:
+        "200":
+          description: Rol actualizado exitosamente
+        "403":
+          description: Sin permisos
+        "404":
+          description: Usuario no encontrado
+
+  /usuarios/{id}/toggle:
+    patch:
+      tags: [Usuarios]
+      summary: Activar o desactivar un usuario
+      description: Roles permitidos — director
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Estado del usuario actualizado exitosamente
+        "403":
+          description: Sin permisos
+        "404":
+          description: Usuario no encontrado

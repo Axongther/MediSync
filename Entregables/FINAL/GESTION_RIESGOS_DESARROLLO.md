@@ -280,3 +280,96 @@ De los doce riesgos identificados en el proceso de desarrollo, seis se materiali
 La totalidad de los riesgos de nivel crítico y alto que se materializaron fueron resueltos sin impacto permanente sobre la funcionalidad del sistema. Los riesgos aceptados como deuda técnica no comprometen la operación del sistema en su estado actual, pero deberán ser atendidos antes de escalar el sistema a un entorno de producción con mayor volumen de usuarios y datos.
 
 ---
+# Documento de Visión del Producto: MediSync
+
+## 1. Introducción
+**¿Qué es MediSync?**
+MediSync es una plataforma web diseñada para ayudar a clínicas y consultorios médicos a administrar pacientes, citas y expedientes médicos en un solo sistema. La plataforma busca mejorar la organización médica y facilitar el acceso a la información tanto para médicos como para pacientes.
+
+## 2. Audiencia Objetivo
+MediSync está dirigido a los siguientes perfiles:
+* **Médicos:** Para consulta de expedientes y gestión de consultas.
+* **Recepcionistas:** Para la administración de la agenda y atención inicial.
+* **Administradores de clínicas:** Para supervisión de métricas y gestión de usuarios.
+* **Pacientes:** Para acceso a su propia información y recordatorios.
+
+## 3. Declaración del Problema
+Actualmente, muchas clínicas manejan información médica de manera manual o utilizando sistemas fragmentados. Esto provoca:
+* Mala organización.
+* Pérdida de información crítica.
+* Errores en la programación de citas.
+* Dificultad para consultar expedientes históricos.
+* Retrasos en la atención médica.
+
+**Solución:** MediSync centraliza toda la información en una sola plataforma para facilitar la administración médica integral.
+
+## 4. Funciones Principales
+* Registro de pacientes.
+* Administración de citas.
+* Consulta de historiales médicos.
+* Gestión de agendas médicas.
+* Subida de estudios y archivos médicos.
+* Notificaciones de citas.
+* Gestión de usuarios y roles.
+
+## 5. Criterios de Éxito
+El proyecto se considerará exitoso si:
+1.  Las citas se organizan correctamente y sin traslapes.
+2.  Los pacientes pueden consultar su información de forma remota.
+3.  Los médicos acceden rápidamente a los expedientes durante la consulta.
+4.  La clínica reduce notablemente los errores administrativos.
+5.  La plataforma funciona de manera estable y bajo estándares de seguridad.
+
+## 6. Product Backlog Inicial
+
+| ID | Historia de Usuario | Prioridad | Criterios de Aceptación |
+| :--- | :--- | :--- | :--- |
+| **HU-01** | Registrar pacientes en el sistema | Alta | El sistema debe guardar correctamente la información del paciente. |
+| **HU-02** | Buscar historial clínico por nombre o folio | Alta | El sistema debe mostrar el historial correspondiente. |
+| **HU-03** | Ver citas previas del paciente | Alta | El paciente debe visualizar sus citas anteriores. |
+| **HU-04** | Crear y modificar citas | Alta | El sistema debe permitir editar y guardar citas. |
+| **HU-05** | Cancelar citas | Alta | El sistema debe liberar el horario cancelado. |
+| **HU-06** | Ver agenda por médico y día | Alta | El sistema debe mostrar citas organizadas. |
+| **HU-07** | Configurar duración de citas | Media | El administrador debe definir duración por especialidad. |
+| **HU-08** | Enviar recordatorios de citas | Alta | El paciente debe recibir notificaciones antes de la cita. |
+| **HU-09** | Generar alertas de cancelación | Media | El sistema debe avisar cuando una cita sea cancelada. |
+| **HU-10** | Reasignar horarios cancelados | Media | El sistema debe permitir reutilizar espacios disponibles. |
+| **HU-11** | Reprogramar citas | Media | El paciente debe poder cambiar la fecha de su cita. |
+| **HU-12** | Ver horarios disponibles | Media | El sistema debe mostrar horarios actualizados. |
+| **HU-13** | Consultar historial de citas | Media | El sistema debe mostrar citas pasadas. |
+| **HU-14** | Ver tasa de cancelaciones | Media | El sistema debe mostrar métricas de cancelaciones. |
+| **HU-15** | Ver métricas de médicos | Media | El sistema debe mostrar citas atendidas por médico. |
+| **HU-16** | Ver agenda diaria del médico | Alta | El médico debe visualizar sus citas del día. |
+| **HU-17** | Recibir notificaciones de cambios | Media | El paciente debe recibir avisos de cambios o cancelaciones. |
+| **HU-18** | Buscar pacientes fácilmente | Alta | El sistema debe permitir búsqueda rápida de pacientes. |
+| **HU-19** | Subir estudios al expediente | Alta | El sistema debe almacenar archivos médicos correctamente. |
+| **HU-20** | Gestionar roles y permisos | Alta | El sistema debe controlar accesos según el rol. |
+
+## 7. Definición del MVP (Producto Mínimo Viable)
+
+**Historias incluidas en el MVP:**
+* **HU-03:** Ver citas previas del paciente.
+* **HU-08:** Enviar recordatorios de citas.
+* **HU-14:** Ver tasa de cancelaciones.
+* **HU-15:** Ver métricas de médicos.
+* **HU-19:** Subir estudios al expediente.
+
+**Justificación:**
+Estas historias representan las funciones que generan mayor valor inmediato. El MVP permite validar el seguimiento médico, la reducción de inasistencias y la centralización de archivos antes de escalar el sistema.
+
+## 8. Gestión de Riesgos
+
+| ID | Riesgo | Probabilidad | Impacto | Mitigación Aplicada | Responsable |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **R-02** | Conflictos entre rutas del backend | Media | Alto | Reorganización de rutas y revisión de código. | Backend Developer |
+| **R-03** | Pérdida de sesión por token inválido | Media | Medio | Validación automática de JWT. | Frontend Developer |
+| **R-04** | Datos incompletos en formularios | Alta | Medio | Validaciones en frontend y backend. | FE & BE |
+| **R-05** | Duplicidad de usuarios | Media | Medio | Verificación previa de correos electrónicos. | Backend Developer |
+| **R-06** | Errores de navegación | Media | Alto | Validación de rutas registradas. | Frontend Developer |
+| **R-10** | Retrasos en el MVP | Media | Alto | Enfoque únicamente en funciones esenciales. | Scrum Master |
+| **R-11** | Cambios de requerimientos | Media | Alta | Transformar o unificar con historias anteriores. | PO & Scrum |
+| **R-12** | Mala organización de objetivos | Media | Alta | Manejo de notaciones propias y seguimiento constante. | Scrum Master |
+| **R-13** | Funcionalidades incompletas | Alta | Alta | Revisión constante del trabajo enviado. | Equipo DEV |
+
+## 9. Conclusión
+MediSync se posiciona como una solución robusta para la modernización de la administración médica. Al centralizar expedientes y automatizar agendas, no solo optimiza la operación interna de las clínicas, sino que eleva la calidad de la atención al paciente. El enfoque en el MVP asegura una base sólida y funcional para el crecimiento futuro del ecosistema.
